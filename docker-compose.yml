@@ -1,0 +1,60 @@
+﻿version: "3.9"
+
+services:
+  prisoner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bubble_prisoner
+    hostname: containment-unit-01
+
+    # ── NETWORK: COMPLETELY DISABLED ─────────────────────────────────────────
+    network_mode: "none"
+
+    # ── SECURITY: DROP ALL CAPABILITIES ──────────────────────────────────────
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_PTRACE
+
+    # ── NO PRIVILEGE ESCALATION ───────────────────────────────────────────────
+    security_opt:
+      - no-new-privileges:true
+      - seccomp:unconfined
+
+    # ── RESOURCE LIMITS — increased for LLM inference ─────────────────────────
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"         # 2 cores for LLM inference
+          memory: 1536M       # 1.5GB — model needs ~800MB, rest for agent
+        reservations:
+          memory: 512M
+
+    # ── VOLUMES ───────────────────────────────────────────────────────────────
+    volumes:
+      - ./logs:/logs
+      - ./pipe:/pipe
+      # Model mounted READ-ONLY inside the container — prisoner can use it but not modify it
+      - ./models:/models:ro
+
+    # ── NO IPC, NO PID SHARING ────────────────────────────────────────────────
+    ipc: private
+    pid: host
+
+    # ── RESTART: NEVER AUTO-RESTART ───────────────────────────────────────────
+    restart: "no"
+
+    # ── LOGGING ───────────────────────────────────────────────────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+    # ── LABELS ────────────────────────────────────────────────────────────────
+    labels:
+      - "bubble.role=prisoner"
+      - "bubble.containment=active"
+      - "bubble.version=2.0-ai"
+      - "bubble.brain=qwen2.5-0.5b"

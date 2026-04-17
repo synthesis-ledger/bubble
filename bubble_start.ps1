@@ -1,0 +1,1 @@
+Set-Location 'C:\dooly\bubble'; New-Item -Force -ItemType File 'C:\dooly\bubble\pipe\agent_to_observer' | Out-Null; New-Item -Force -ItemType File 'C:\dooly\bubble\pipe\observer_to_agent' | Out-Null; docker compose build; docker compose up -d; docker ps --filter 'name=bubble_prisoner'
