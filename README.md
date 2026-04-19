@@ -201,3 +201,8 @@ MIT License. See [LICENSE](LICENSE) for details.
 Lars O. Horpestad · lars@aithinklab.com
 
 [Full Research Paper](https://www.aithinklab.com/the-prisoner-experiment.html) · [Synthesis Ledger](https://synthesisledger.xyz) · [AI ThinkLab](https://aithinklab.com)
+
+
+## Research Data
+The raw output for the first 580 iterations (as documented in the Prisoner Experiment paper) can be found in `/research_logs/prisoner_research_milestone_580.log`.
+
